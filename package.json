@@ -1,0 +1,23 @@
+{
+  "name": "gloss",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/trullock/gloss.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/trullock/gloss/issues"
+  },
+  "homepage": "https://github.com/trullock/gloss",
+  "devDependencies": {
+    "handlebars": "^3.0.3",
+    "yamljs": "^0.2.3"
+  }
+}

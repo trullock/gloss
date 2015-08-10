@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head></head>
+	<body>
+	{{#each terms}}
+		<article id="#Term_{{term}}">
+			<h2>{{term}}</h2>
+			<ul>
+		{{#if other}}
+				<li class="other"><a href="#Term_{{other}}">See: {{other}}</a></li>
+		{{ else}}
+				<li>{{desc}}</li>
+			{{# if tags}}
+				<li>
+					<ul>
+					{{#each tags}}
+						<li><a href="#Tag_{{this}}">{{this}}</a></li>
+					{{/each}}
+					</ul>
+				</li>
+			{{/if}}
+		{{/if}}
+			</ul>
+		</article>
+	{{/each}}
+	</body>
+</html>
