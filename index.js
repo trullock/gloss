@@ -87,7 +87,9 @@ function prepare(data){
 			var desc = data[term];
 			// Handle SeeOthers
 			if(data[desc])
-				item.other = desc;
+				item.refs.see.push(desc);
+			else if(desc.substr(0, 1) == '¬' && data[desc.substr(1)])
+				item.refs.not.push(desc);
 			// Simple definitions
 			else
 				item.desc = desc;
