@@ -1,17 +1,71 @@
 <!DOCTYPE html>
 <html>
-	<head></head>
+	<head>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+		<style type="text/css">
+		.hidden { display: none;}
+		</style>
+	</head>
 	<body>
+	<menu class="az">
+		<button class="all">all</button>
+		<button data-char="a">a</button>
+		<button data-char="b">b</button>
+		<button data-char="c">c</button>
+		<button data-char="d">d</button>
+		<button data-char="e">e</button>
+		<button data-char="f">f</button>
+		<button data-char="g">g</button>
+		<button data-char="h">h</button>
+		<button data-char="i">i</button>
+		<button data-char="j">j</button>
+		<button data-char="k">k</button>
+		<button data-char="l">l</button>
+		<button data-char="m">m</button>
+		<button data-char="n">n</button>
+		<button data-char="o">o</button>
+		<button data-char="p">p</button>
+		<button data-char="q">q</button>
+		<button data-char="r">r</button>
+		<button data-char="s">s</button>
+		<button data-char="t">t</button>
+		<button data-char="u">u</button>
+		<button data-char="v">v</button>
+		<button data-char="w">w</button>
+		<button data-char="x">x</button>
+		<button data-char="y">y</button>
+		<button data-char="z">z</button>
+	</menu>
 	{{#each terms}}
-		<article id="#Term_{{term}}">
+		<article id="Term_{{term}}" data-term="{{term}}">
 			<h2>{{term}}</h2>
 			<ul>
-		{{#if other}}
-				<li class="other"><a href="#Term_{{other}}">See: {{other}}</a></li>
-		{{ else}}
-				<li>{{desc}}</li>
+		{{#if desc}}
+				<li class="desc">{{desc}}</li>
+		{{/if}}
+			{{# if refs.see}}
+				<li>
+					See also:
+					<ul>
+					{{#each refs.see}}
+						<li class="other"><a href="#Term_{{this}}">{{this}}</a></li>
+					{{/each}}
+					</ul>
+				</li>
+			{{/if}}
+			{{# if refs.not}}
+				<li>
+					Not to be confused with:
+					<ul>
+					{{#each refs.not}}
+						<li class="other"><a href="#Term_{{this}}">{{this}}</a></li>
+					{{/each}}
+					</ul>
+				</li>
+			{{/if}}
 			{{# if tags}}
 				<li>
+					Tags:
 					<ul>
 					{{#each tags}}
 						<li><a href="#Tag_{{this}}">{{this}}</a></li>
@@ -19,9 +73,110 @@
 					</ul>
 				</li>
 			{{/if}}
-		{{/if}}
+			
 			</ul>
 		</article>
 	{{/each}}
 	</body>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			var $articles = $('article');
+			
+			// Hash all articles by char
+			var hash = {}
+			$articles.each(function(){
+				var $this = $(this);
+				var term = $this.data('term');
+				var chr = term.toLowerCase().substr(0, 1);
+				
+				if(!hash[chr])
+					hash[chr] = [];
+					
+				hash[chr].push($this);
+				
+				linkReferences($this);
+			});
+			
+			// Disable a-z buttons with no articles
+			$('menu.az button[data-char]').prop('disabled', true);
+			for(var chr in hash) {
+				if(!hash.hasOwnProperty(chr))
+					continue;
+				
+				$('menu.az button[data-char="' + chr + '"]').prop('disabled', false);
+			}
+			
+			// Attach filter click handlers
+			$('menu.az button.all').click(function(){
+				filter(null);
+			});		
+			$('menu.az button[data-char]').click(function(){
+				var $this = $(this);
+				var chr = $this.data('char');
+				filter(chr);
+			});
+			$('article').on('click', 'a', function(){
+				filter(null);
+			})
+			
+			// Filter the view
+			function filter(chr){
+				if(!chr) {
+					$articles.removeClass('hidden');				
+					return;
+				}	
+				
+				$articles.addClass('hidden');
+				
+				if(!hash[chr])
+					return;
+				
+			
+				$.each(hash[chr], function(i, $article){
+					$article.removeClass('hidden');
+				})
+			}
+			
+			function linkReferences($article){
+				var $desc = $article.find('.desc');
+				var desc = $desc.html();
+				if(!desc)
+					return;
+					
+				var linked = desc.replace(/`([^`]+)`/g, '<a href="#Term_$1" class="ref">$1</a>');
+				$desc.html(linked);
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		});
+	</script>
 </html>

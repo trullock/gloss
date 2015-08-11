@@ -3,4 +3,6 @@ Thing A:
   - [Tag1, Tag2]
 Thing C: Thing B
 Thing B:
-  B description
+  - B description
+  - Thing C
+  - ¬Thing A

@@ -1,4 +1,4 @@
-var handlebars = require('handlebars'),
+﻿var handlebars = require('handlebars'),
 	fs = require('fs'),
 	YAML = require('yamljs');
   
@@ -45,25 +45,41 @@ function prepare(data){
 			continue;
 		
 		var item = {
-			term: term
+			term: term,
+			refs: {
+				see: [],
+				not: []
+			}
 		};
 		
 		// Full syntax
 		if(data[term] instanceof Array)
 		{
-			// Handle desc
-			if(data[term].length > 0)
-				item.desc = data[term][0];
-			
-			// Handle tags
-			if(data[term].length > 1)
-			{
+			var nonTags = [];
+			for(var i = 0; i < data[term].length; i++) {
 				// Handle tag arrays
-				if(data[term][1] instanceof Array)
-					item.tags = data[term][1];
-				// Handle single tag
-				else if (typeof data[term][1] == 'string')
-					item.tags = [data[term][1]];
+				if(data[term][i] instanceof Array) {
+					item.tags = data[term][i];
+					continue;
+				}
+				
+				// If we have a reference
+				if(data[data[term][i]]) {
+					item.refs.see.push(data[term][i])
+					continue;
+				}
+				
+				if(data[term][i].substr(0, 1) == '¬') {
+					
+					// If we have a reference
+					if(data[data[term][i].substr(1)])
+						item.refs.not.push(data[term][i].substr(1))
+					
+					continue;
+				}
+				
+				// Handle desc
+				item.desc = data[term][i];
 			}
 		}
 		else
