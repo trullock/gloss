@@ -1,182 +1,103 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-		<style type="text/css">
-		.hidden { display: none;}
-		</style>
+		<link rel="stylesheet" href="gloss.css" />
 	</head>
 	<body>
 	<menu class="az">
-		<button class="all">all</button>
-		<button data-char="a">a</button>
-		<button data-char="b">b</button>
-		<button data-char="c">c</button>
-		<button data-char="d">d</button>
-		<button data-char="e">e</button>
-		<button data-char="f">f</button>
-		<button data-char="g">g</button>
-		<button data-char="h">h</button>
-		<button data-char="i">i</button>
-		<button data-char="j">j</button>
-		<button data-char="k">k</button>
-		<button data-char="l">l</button>
-		<button data-char="m">m</button>
-		<button data-char="n">n</button>
-		<button data-char="o">o</button>
-		<button data-char="p">p</button>
-		<button data-char="q">q</button>
-		<button data-char="r">r</button>
-		<button data-char="s">s</button>
-		<button data-char="t">t</button>
-		<button data-char="u">u</button>
-		<button data-char="v">v</button>
-		<button data-char="w">w</button>
-		<button data-char="x">x</button>
-		<button data-char="y">y</button>
-		<button data-char="z">z</button>
+		<a href="#AZ_">all</a>
+		<a href="#AZ_a">a</a>
+		<a href="#AZ_b">b</a>
+		<a href="#AZ_c">c</a>
+		<a href="#AZ_d">d</a>
+		<a href="#AZ_e">e</a>
+		<a href="#AZ_f">f</a>
+		<a href="#AZ_g">g</a>
+		<a href="#AZ_h">h</a>
+		<a href="#AZ_i">i</a>
+		<a href="#AZ_j">j</a>
+		<a href="#AZ_k">k</a>
+		<a href="#AZ_l">l</a>
+		<a href="#AZ_m">m</a>
+		<a href="#AZ_n">n</a>
+		<a href="#AZ_o">o</a>
+		<a href="#AZ_p">p</a>
+		<a href="#AZ_q">q</a>
+		<a href="#AZ_r">r</a>
+		<a href="#AZ_s">s</a>
+		<a href="#AZ_t">t</a>
+		<a href="#AZ_u">u</a>
+		<a href="#AZ_v">v</a>
+		<a href="#AZ_w">w</a>
+		<a href="#AZ_x">x</a>
+		<a href="#AZ_y">y</a>
+		<a href="#AZ_z">z</a>
 	</menu>
+	<menu class="tags">
+		<a href="#Tag_" class="all">All</a>
+	{{#each tags}}
+		<a href="#Tag_{{this}}">{{this}}</a>
+	{{/each}}
+	</menu>
+	<form action="#" id="Search">
+		<input type="text" />
+	</form>
 	{{#each terms}}
-		<article id="Term_{{term}}" data-term="{{term}}">
+		<article id="Term_{{term}}" data-term="{{term}}" data-tags="{{#each tags}}{{this}},{{/each}}">
 			<h2>{{term}}</h2>
+		{{#each descs}}
+			<p class="desc">{{this}}</p>
+		{{/each}}
 			<ul>
-			{{#if desc}}
-				<li class="desc">{{desc}}</li>
-			{{/if}}
-			{{# if refs.see}}
+			{{# if types}}
 				<li>
-					See:
+					Types:
 					<ul>
-					{{#each refs.see}}
+					{{#each types}}
 						<li class="other"><a href="#Term_{{this}}">{{this}}</a></li>
 					{{/each}}
 					</ul>
 				</li>
 			{{/if}}
+			{{# if refs.see}}
+				<aside class="seeother">
+					See Other:
+					<ul>
+					{{#each refs.see}}
+						<li class="other"><a href="#Term_{{this}}">{{this}}</a></li>
+					{{/each}}
+					</ul>
+				</aside>
+			{{/if}}
 			{{# if refs.not}}
-				<li>
+				<aside class="disambiguate">
 					Disambiguation:
 					<ul>
 					{{#each refs.not}}
 						<li class="other"><a href="#Term_{{this}}">{{this}}</a></li>
 					{{/each}}
 					</ul>
-				</li>
+				</aside>
 			{{/if}}
 			{{# if tags}}
-				<li>
+				<aside class="tags">
 					Tags:
 					<ul>
 					{{#each tags}}
 						<li><a href="#Tag_{{this}}">{{this}}</a></li>
 					{{/each}}
 					</ul>
-				</li>
+				</aside>
 			{{/if}}
 			
 			</ul>
 		</article>
 	{{/each}}
 	</body>
-	<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="jquery-2.1.4.min.js"></script>
+	<script type="text/javascript" src="jquery.autocomplete.js"></script>
 	<script type="text/javascript">
-		$(function(){
-			var $articles = $('article');
-			
-			// Hash all articles by char
-			var hash = {}
-			$articles.each(function(){
-				var $this = $(this);
-				var term = $this.data('term');
-				var chr = term.toLowerCase().substr(0, 1);
-				
-				if(!hash[chr])
-					hash[chr] = [];
-					
-				hash[chr].push($this);
-				
-				linkReferences($this);
-			});
-			
-			// Disable a-z buttons with no articles
-			$('menu.az button[data-char]').prop('disabled', true);
-			for(var chr in hash) {
-				if(!hash.hasOwnProperty(chr))
-					continue;
-				
-				$('menu.az button[data-char="' + chr + '"]').prop('disabled', false);
-			}
-			
-			// Attach filter click handlers
-			$('menu.az button.all').click(function(){
-				filter(null);
-			});		
-			$('menu.az button[data-char]').click(function(){
-				var $this = $(this);
-				var chr = $this.data('char');
-				filter(chr);
-			});
-			$('article').on('click', 'a', function(){
-				filter(null);
-			})
-			
-			// Filter the view
-			function filter(chr){
-				if(!chr) {
-					$articles.removeClass('hidden');				
-					return;
-				}	
-				
-				$articles.addClass('hidden');
-				
-				if(!hash[chr])
-					return;
-				
-			
-				$.each(hash[chr], function(i, $article){
-					$article.removeClass('hidden');
-				})
-			}
-			
-			function linkReferences($article){
-				var $desc = $article.find('.desc');
-				var desc = $desc.html();
-				if(!desc)
-					return;
-					
-				var linked = desc.replace(/`([^`]+)`/g, '<a href="#Term_$1" class="ref">$1</a>');
-				$desc.html(linked);
-			}
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-		});
+		window.ac = {{{ac}}};
 	</script>
+	<script type="text/javascript" src="gloss.js"></script>
 </html>

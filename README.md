@@ -10,9 +10,9 @@ Supports descriptions, tags, references and disambiguations
 * `output.html` is the generated html file
 * `--sort-yaml` causes the input yaml file to be sorted into alphabetical order
 
-# definitions
+# Definitions
 
-## simple
+## Simple
 
     Thing: Description of thing
 
@@ -21,13 +21,13 @@ or
     Thing:
       Description of thing
 
-## tags
+## Tags
 
     Thing:
       - Description of thing
       - [One Tag, Another Tag]
 
-## references
+## References
 
 Define "See other" style definitions by simply setting the description to the name of the other term:
 
@@ -45,7 +45,7 @@ Reference other terms inside descriptions with backticks
 	  - Description of Thing B, which is similar to `Thing A`
       - Thing A
 	
-## disambiguations
+## Disambiguations
 
 Define "disambiguation" style definitions by prefixing the term to disambiguate against with the ¬ (not) operator:
 
@@ -55,3 +55,14 @@ Define "disambiguation" style definitions by prefixing the term to disambiguate 
       - Thing A
 	  - ¬Thing C
 	Thing C: Description of Thing C
+
+# Multiple Definitions
+
+You can conveniently create similies by comma separating term names. The first term becomes the primary term that the similies reference.
+
+    Thing A,Also A: Description of Thing A
+	
+is equivalent to:
+
+    Thing A: Description of Thing A
+    Also A: Thing A

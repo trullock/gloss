@@ -17,7 +17,9 @@
   },
   "homepage": "https://github.com/trullock/gloss",
   "devDependencies": {
+    "chai": "^3.2.0",
     "handlebars": "^3.0.3",
+    "mocha": "^2.3.0",
     "yamljs": "^0.2.3"
   }
 }
